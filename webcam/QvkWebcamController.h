@@ -7,13 +7,14 @@
 #include <QCheckBox>
 #include <QDebug>
 #include <QMessageBox>
+#include <QHBoxLayout>
 
-class QvkWebcamController : public QObject
+class QvkWebcamController : public QHBoxLayout
 {
     Q_OBJECT
 
 public:
-  QvkWebcamController( QWidget * frame );
+  QvkWebcamController(QWidget *parent = 0 );
   virtual ~QvkWebcamController();
   QvkWebcamWatcher * myWebcamWatcher;
 

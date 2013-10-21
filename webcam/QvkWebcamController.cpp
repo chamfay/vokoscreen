@@ -1,18 +1,22 @@
 #include "QvkWebcamController.h" 
+#include <QLayout>
 
-QvkWebcamController::QvkWebcamController( QWidget * value )
+QvkWebcamController::QvkWebcamController(QWidget *parent )
+    : QHBoxLayout(parent)
 {
   //qDebug() << "Begin QvkWebcamController::QvkWebcamController( QWidget * value ) ***************************";
-  
-  checkBox = new QCheckBox( value );
-  checkBox->setText( tr( "Webcam" ) );
-  checkBox->show();
-  connect( checkBox, SIGNAL( clicked() ), SLOT( webcam() ) );
 
-  comboBoxCount = new QComboBox( value );
-  comboBoxCount->setGeometry( 250, 40, 40, 21 );
+
+  checkBox = new QCheckBox;
+  checkBox->setText( tr( "Webcam" ) );
+  connect( checkBox, SIGNAL( clicked() ), SLOT( webcam() ) );
+  this->addWidget(checkBox, 0, Qt::AlignLeft);
+
+
+  comboBoxCount = new QComboBox;
   comboBoxCount->setToolTip( "Select webcam" );
-  comboBoxCount->show();
+  this->addWidget(comboBoxCount, 0, Qt::AlignLeft);
+
   
   myWebcamWatcher = new QvkWebcamWatcher();
   connect( myWebcamWatcher, SIGNAL( changed( QStringList ) ), this, SLOT( webcamChangedEvent( QStringList ) ) );
@@ -29,8 +33,8 @@ QvkWebcamController::QvkWebcamController( QWidget * value )
   vkWebcam = new QvkWebcam();
   QSettings settings( "vokoscreen", "vokoscreen" );   
   settings.beginGroup( "Webcam" );
-    vkWebcam->setDeviceNumber( settings.value( "Number", 0 ).toUInt() );
-    comboBoxCount->setCurrentIndex( vkWebcam->getDeviceNumber() );
+  vkWebcam->setDeviceNumber( settings.value( "Number", 0 ).toUInt() );
+  comboBoxCount->setCurrentIndex( vkWebcam->getDeviceNumber() );
   settings.endGroup();
   
   //vkWebcam->setDeviceNumber( comboBoxCount->currentText().toUInt() );

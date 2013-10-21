@@ -47,6 +47,10 @@
 
 #include <QDateTime>
 
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+
 class screencast : public QMainWindow
 { 
 Q_OBJECT
@@ -244,6 +248,8 @@ private:
     int topFrameBorder;
     
     QDateTime beginTime;
+
+    QGridLayout *gridAudio;
     
     
  protected:

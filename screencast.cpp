@@ -23,7 +23,7 @@ screencast::screencast()
     bool beta = true;
     QString Beta;
     if ( beta )
-      Beta = "Beta"; 
+      Beta = "Beta";
     else
       Beta = "";
 
@@ -46,7 +46,7 @@ screencast::screencast()
 
     QIcon icon;
     icon.addFile( QString::fromUtf8( ":/pictures/vokoscreen.png" ), QSize(), QIcon::Normal, QIcon::Off );
-    screencast::setWindowIcon( icon );    
+    screencast::setWindowIcon( icon );
 
     qDebug() << "[vokoscreen]" << "Version:" << Version;
     qDebug() << "[vokoscreen]" << "Qt Version: " << qVersion();
@@ -64,288 +64,306 @@ screencast::screencast()
     centralWidget->setObjectName( QString::fromUtf8( "centralWidget" ) );
     this->setCentralWidget( centralWidget );
 
-    tabWidget = new QTabWidget( centralWidget );
-    tabWidget->setGeometry( 120, 0, 450, 190 );
+    QHBoxLayout *hboxGlobal = new QHBoxLayout(centralWidget);
+
+    QLabel* label = new QLabel;
+    label->setPixmap(QPixmap(":/pictures/VokoCola.png"));
+    label->setScaledContents( true );
+    hboxGlobal->addWidget(label, 0, Qt::AlignCenter);
+
+    QVBoxLayout *vboxGlobal = new QVBoxLayout;
+    hboxGlobal->addLayout(vboxGlobal);
+
+    tabWidget = new QTabWidget;
     tabWidget->setIconSize( QSize( 40, 40 ) );
+    vboxGlobal->addWidget(tabWidget);
 
     // Tab 1 Screen options ***************************************************
     QFrame *frame = new QFrame( this );
-    frame->setGeometry( 120, 10, 300, 200 );
-    frame->show();
     tabWidget->addTab( frame, "" );
     tabWidget->setTabIcon( 0, QIcon( ":/pictures/monitor.png" ) );
     QFont qfont = frame->font();
     qfont.setPixelSize( 12 );
     frame->setFont( qfont );
+
+    QHBoxLayout *hboxTab1 = new QHBoxLayout(frame);
+    hboxTab1->setMargin(20);
+    QVBoxLayout *vboxWindow = new QVBoxLayout;
+    hboxTab1->addLayout(vboxWindow);
  
-    FullScreenRadioButton = new QRadioButton( frame );
-    FullScreenRadioButton->setGeometry( QRect( 20, 15, 120, 21 ) );
+    FullScreenRadioButton = new QRadioButton;
     FullScreenRadioButton->setText( tr( "Fullscreen" ) );
     FullScreenRadioButton->setChecked( true );
     connect( FullScreenRadioButton, SIGNAL( clicked() ), SLOT( clickedScreenSize() ) );
+    vboxWindow->addWidget(FullScreenRadioButton);
 
-    WindowRadioButton = new QRadioButton( frame );
-    WindowRadioButton->setGeometry( QRect( 20, 40, 85, 21 ) );
+    WindowRadioButton = new QRadioButton;
     WindowRadioButton->setText( tr( "Window" ) );
     connect( WindowRadioButton, SIGNAL( clicked() ), SLOT( clickedScreenSize() ) );
+    vboxWindow->addWidget(WindowRadioButton);
 
-    AreaRadioButton = new QRadioButton( frame );
-    AreaRadioButton->setGeometry( QRect( 20, 65, 85, 21 ) );
+    AreaRadioButton = new QRadioButton;
     AreaRadioButton->setText( tr( "Area" ) );
     connect( AreaRadioButton, SIGNAL( clicked() ), SLOT( clickedScreenSize() ) );
+    vboxWindow->addWidget(AreaRadioButton);
+
+    vboxWindow->addSpacing(20);
+
+    QFrame *vline = new QFrame(frame);
+    vline->setFrameShape(QFrame::VLine);
+    hboxTab1->addWidget(vline);
+
+    hboxTab1->addSpacing(40);
+
+    QVBoxLayout *vboxOptions = new QVBoxLayout;
+    hboxTab1->addLayout(vboxOptions);
     
-    MagnifierCheckBox = new QCheckBox( frame );
+    QHBoxLayout *hboxMagn = new QHBoxLayout;
+    vboxOptions->addLayout(hboxMagn);
+
+    MagnifierCheckBox = new QCheckBox;
     MagnifierCheckBox->setText( tr( "Magnification" ) );
-    MagnifierCheckBox->setGeometry( QRect( 160, 15, 120, 21 ) );
     MagnifierCheckBox->setToolTip( "CTRL+SHIFT+F9" );
-    MagnifierCheckBox->show();
+    hboxMagn->addWidget(MagnifierCheckBox, 0, Qt::AlignLeft);
 
-    QPushButton *MagnifierDialogPushButton = new QPushButton( frame );
-    MagnifierDialogPushButton->setGeometry( 270, 15, 20, 21 );
-    MagnifierDialogPushButton->setText( "..." );
-    MagnifierDialogPushButton->show();
+    QPushButton *MagnifierDialogPushButton = new QPushButton("...");
     connect( MagnifierDialogPushButton, SIGNAL( clicked() ), SLOT( MagnifierDialog() ) );
-    
-    webcamCheckBox = new QvkWebcamController( frame );
-    webcamCheckBox->setGeometry( 160, 40, 120, 21 );
+    hboxMagn->addWidget(MagnifierDialogPushButton, 0, Qt::AlignLeft);
 
-    QLabel *CountdownLabel = new QLabel( frame );
-    CountdownLabel->setGeometry( 160, 110, 80, 25 );
+    webcamCheckBox = new QvkWebcamController;
+    vboxOptions->addLayout(webcamCheckBox);
+
+    vboxOptions->addSpacing(20);
+
+    QHBoxLayout *hboxCount = new QHBoxLayout;
+    vboxOptions->addLayout(hboxCount);
+
+    QLabel *CountdownLabel = new QLabel;
     CountdownLabel->setText( tr( "Countdown" ) );
-    CountdownLabel->show();
+    hboxCount->addWidget(CountdownLabel);
     
-    CountdownSpinBox = new QSpinBox( frame );
-    CountdownSpinBox->setGeometry( 250, 110, 50, 21 );
+    CountdownSpinBox = new QSpinBox;
     CountdownSpinBox->setMinimum( 0 );
     CountdownSpinBox->setMaximum( 999 );
     CountdownSpinBox->setSingleStep( 1 );
     CountdownSpinBox->setValue( 0 );
-    CountdownSpinBox->show();
+    hboxCount->addWidget(CountdownSpinBox,0 , Qt::AlignLeft);
     
+
     // Tab 2 Audio options ****************************************
     TabWidgetAudioFrame = new QFrame( this );
-    TabWidgetAudioFrame->setGeometry( 120, 0, 300, 290 );
-    TabWidgetAudioFrame->show();
     tabWidget->addTab( TabWidgetAudioFrame, "" );
     tabWidget->setTabIcon( 1, QIcon( ":/pictures/micro.png" ) );
     qfont = TabWidgetAudioFrame->font();
     qfont.setPixelSize( 12 );
     TabWidgetAudioFrame->setFont( qfont );
 
-    AudioOnOffCheckbox = new QCheckBox( TabWidgetAudioFrame );
-    AudioOnOffCheckbox->setGeometry( 10, 0, 100, 25 );
-    AudioOnOffCheckbox->setText( tr( "Audio" ) );
-    AudioOnOffCheckbox->show();
+    QVBoxLayout *vboxAudio = new QVBoxLayout(TabWidgetAudioFrame);
+    vboxAudio->setMargin(8);
+
+    AudioOnOffCheckbox = new QCheckBox( tr( "Audio" ) );
+    vboxAudio->addWidget(AudioOnOffCheckbox);
     connect( AudioOnOffCheckbox,  SIGNAL( stateChanged( int ) ), SLOT( stateChangedAudio( int ) ) );
 
-    AlsaRadioButton= new QRadioButton( TabWidgetAudioFrame );
-    AlsaRadioButton->setGeometry( 25, 110, 100, 25 );
-    AlsaRadioButton->setText( tr( "Alsa" ) );
-    AlsaRadioButton->show();
+    gridAudio = new QGridLayout;
+    vboxAudio->addLayout(gridAudio);
+    gridAudio->setContentsMargins(10, 0, 0, 0);
+
+    PulseDeviceRadioButton = new QRadioButton( tr( "Pulse" ) );
+    gridAudio->addWidget(PulseDeviceRadioButton, 0, 0, Qt::AlignTop);
+    connect( PulseDeviceRadioButton,  SIGNAL( clicked( bool )  ), SLOT( clickedAudioPulse( bool ) ) );
+
+    Pulseframe = new QFrame;
+
+    QHBoxLayout *hboxAlsa = new QHBoxLayout;
+    vboxAudio->addLayout(hboxAlsa);
+
+    AlsaRadioButton = new QRadioButton( tr( "Alsa" ) );
+    gridAudio->addWidget(AlsaRadioButton, 1, 0);
     connect( AlsaRadioButton,  SIGNAL( clicked( bool )  ), SLOT( clickedAudioAlsa( bool ) ) );
     
     AlsaHwComboBox = new QComboBox( TabWidgetAudioFrame );
-    AlsaHwComboBox->setGeometry( 90, 110, 345, 25 );
-    AlsaHwComboBox->show();
-    
-    Pulseframe = new QFrame();
-
-    PulseDeviceRadioButton = new QRadioButton( TabWidgetAudioFrame );
-    PulseDeviceRadioButton->setGeometry( 25, 20, 345, 25 );
-    PulseDeviceRadioButton->setText( tr( "Pulse" ) );
-    PulseDeviceRadioButton->show();
-    connect( PulseDeviceRadioButton,  SIGNAL( clicked( bool )  ), SLOT( clickedAudioPulse( bool ) ) );
+    gridAudio->addWidget(AlsaHwComboBox, 1, 1);
 
     // Tab 3 Video options **************************************************
     TabWidgetVideoOptionFrame = new QFrame( this );
-    TabWidgetVideoOptionFrame->setGeometry( 120, 0, 300, 200 );
-    TabWidgetVideoOptionFrame->show();
     tabWidget->addTab( TabWidgetVideoOptionFrame, "" );
     tabWidget->setTabIcon( 2, QIcon( ":/pictures/videooptionen.png" ) );
     qfont = TabWidgetVideoOptionFrame->font();
     qfont.setPixelSize( 12 );
     TabWidgetVideoOptionFrame->setFont( qfont );
 
-    QLabel *VideoOptionLabel = new QLabel( TabWidgetVideoOptionFrame );
-    VideoOptionLabel->setGeometry( 20, 10, 50, 25 );
-    //VideoOptionLabel->setAlignment( Qt::AlignRight );
-    VideoOptionLabel->setText( tr( "Frames" ) );
-    VideoOptionLabel->show();
+    QVBoxLayout *vboxTab3 = new QVBoxLayout(TabWidgetVideoOptionFrame);
+    vboxTab3->setMargin(14);
 
-    FrameSpinBox = new QSpinBox( TabWidgetVideoOptionFrame );
-    FrameSpinBox->setGeometry( QRect( 80, 10, 50, 25 ) );
+    QHBoxLayout *hboxFrames = new QHBoxLayout;
+    vboxTab3->addLayout(hboxFrames);
+
+    QLabel *VideoOptionLabel = new QLabel(tr( "Frames" ));
+    hboxFrames->addWidget(VideoOptionLabel);
+
+    FrameSpinBox = new QSpinBox;
     FrameSpinBox->setMinimum( 1 );
     FrameSpinBox->setMaximum( 99 );
     FrameSpinBox->setSingleStep( 1 );
     FrameSpinBox->setValue( 25 );
-    FrameSpinBox->show();
     connect( FrameSpinBox, SIGNAL( valueChanged( int ) ), SLOT( valueChangedFrames( int ) ) );
+    hboxFrames->addWidget(FrameSpinBox);
 
-    QPushButton *FrameStandardButton = new QPushButton( TabWidgetVideoOptionFrame );
-    FrameStandardButton->setText( tr( "Default" ) );
-    FrameStandardButton->setGeometry( 360, 10, 70, 25 );
-    FrameStandardButton->show();
+    hboxFrames->addStretch();
+
+    QPushButton *FrameStandardButton = new QPushButton( tr( "Default" ) );
     connect( FrameStandardButton, SIGNAL( clicked() ), SLOT( setFrameStandardSpinbox() ) );
+    hboxFrames->addWidget(FrameStandardButton);
 
-    QLabel *VideocodecOptionLabel = new QLabel( TabWidgetVideoOptionFrame );
-    VideocodecOptionLabel->setGeometry( 20, 40, 50, 25 );
-    VideocodecOptionLabel->setText( tr( "Codec" ) );
-    VideocodecOptionLabel->show();
+    QHBoxLayout *hboxVideoOpts = new QHBoxLayout;
+    vboxTab3->addLayout(hboxVideoOpts);
 
-    VideocodecComboBox = new QComboBox( TabWidgetVideoOptionFrame );
-    VideocodecComboBox->setGeometry( 80, 40, 80, 25 );
-    VideocodecComboBox->show();
+    QLabel *VideocodecOptionLabel = new QLabel( tr( "Codec" ) );
+    VideocodecOptionLabel->setMinimumWidth(42);
+    hboxVideoOpts->addWidget(VideocodecOptionLabel);
+
+    VideocodecComboBox = new QComboBox;
     VideocodecComboBox->addItem( "mpeg4" );
     VideocodecComboBox->addItem( "libx264" );
     connect( VideocodecComboBox, SIGNAL( currentIndexChanged( int ) ), SLOT( currentIndexChangedCodec( int ) ) );
+    hboxVideoOpts->addWidget(VideocodecComboBox);
+
+    hboxVideoOpts->addSpacing(20);
     
-    QLabel *VideoContainerLabel = new QLabel(TabWidgetVideoOptionFrame );
-    VideoContainerLabel->setGeometry( 175, 40, 50, 25 );
-    VideoContainerLabel->setText( tr( "Format" ) );
-    VideoContainerLabel->show();
+    QLabel *VideoContainerLabel = new QLabel( tr( "Format" ) );
+    hboxVideoOpts->addWidget(VideoContainerLabel);
+
+    hboxVideoOpts->addSpacing(4);
     
-    VideoContainerComboBox = new QComboBox( TabWidgetVideoOptionFrame );
-    VideoContainerComboBox->setGeometry( 230, 40, 70, 25 );
+    VideoContainerComboBox = new QComboBox;
     VideoContainerComboBox->addItem( "avi" );
     VideoContainerComboBox->addItem( "mkv" );
-    VideoContainerComboBox->show();
     connect( VideoContainerComboBox, SIGNAL( currentIndexChanged( int ) ), SLOT( currentIndexChangedFormat( int ) ) );
+    hboxVideoOpts->addWidget(VideoContainerComboBox);
     
-    QPushButton *VideocodecStandardButton = new QPushButton( TabWidgetVideoOptionFrame );
-    VideocodecStandardButton->setText( tr( "Default" ) );
-    VideocodecStandardButton->setGeometry( 360, 40, 70, 25 );
-    VideocodecStandardButton->show();
+    hboxVideoOpts->addStretch();
+
+    QPushButton *VideocodecStandardButton = new QPushButton( tr( "Default" ) );
     connect( VideocodecStandardButton, SIGNAL( clicked() ), SLOT( setVideocodecStandardComboBox() ) );
+    hboxVideoOpts->addWidget(VideocodecStandardButton);
     
-    HideMouseCheckbox = new QCheckBox( TabWidgetVideoOptionFrame );
-    HideMouseCheckbox->setGeometry( 20, 70, 300, 25 );
-    HideMouseCheckbox->setText( tr( "Do not record mouse cursor" ) );
-    HideMouseCheckbox->show();
+    vboxTab3->addSpacing(20);
+
+    HideMouseCheckbox = new QCheckBox( tr( "Do not record mouse cursor" ) );
+    vboxTab3->addWidget(HideMouseCheckbox);
 
     // Tab 4 Miscellaneous options **************************************************
     TabWidgetMiscellaneousFrame = new QFrame( this );
-    TabWidgetMiscellaneousFrame->setGeometry( 120, 0, 300, 200 );
-    TabWidgetMiscellaneousFrame->show();
     tabWidget->addTab(TabWidgetMiscellaneousFrame, "" );
     tabWidget->setTabIcon( 3, QIcon( ":/pictures/tools.png" ) );
     qfont = TabWidgetMiscellaneousFrame->font();
     qfont.setPixelSize( 12 );
     TabWidgetMiscellaneousFrame->setFont( qfont );
 
-    QLabel *SaveVideoPathLabel = new QLabel( TabWidgetMiscellaneousFrame );
-    SaveVideoPathLabel->setGeometry( 30, 30, 100, 25 );
-    SaveVideoPathLabel->setText( tr( "Videopath" ) );
-    SaveVideoPathLabel->show();
+    QVBoxLayout *vboxTab4 = new QVBoxLayout(TabWidgetMiscellaneousFrame);
+    vboxTab4->setMargin(14);
 
-    SaveVideoPathLineEdit = new QLineEdit( TabWidgetMiscellaneousFrame );
-    SaveVideoPathLineEdit->setGeometry( 140, 30, 210, 25 );
+    QHBoxLayout *hboxPath = new QHBoxLayout;
+    vboxTab4->addLayout(hboxPath);
+
+    QLabel *SaveVideoPathLabel = new QLabel( tr( "Videopath" ) );
+    SaveVideoPathLabel->setMinimumWidth(65);
+    hboxPath->addWidget(SaveVideoPathLabel);
+
+    SaveVideoPathLineEdit = new QLineEdit;
     SaveVideoPathLineEdit->setReadOnly( true );
-    SaveVideoPathLineEdit->show();
+    hboxPath->addWidget(SaveVideoPathLineEdit);
     
-    QPushButton *SaveVideoPathPushButton = new QPushButton( TabWidgetMiscellaneousFrame );
-    SaveVideoPathPushButton->setGeometry( 350, 30, 20, 25);
-    SaveVideoPathPushButton->setText( "..." );
-    SaveVideoPathPushButton->show();
+    QPushButton *SaveVideoPathPushButton = new QPushButton( "..." );
     connect( SaveVideoPathPushButton, SIGNAL(clicked() ), SLOT( saveVideoPath() ) );
-    
-    QLabel *VideoPlayerLabel = new QLabel(TabWidgetMiscellaneousFrame);
-    VideoPlayerLabel->setGeometry( 30, 60, 100, 25 );
-    VideoPlayerLabel->setText( tr( "Player" ) );
-    VideoPlayerLabel->show();
-    
-    VideoplayerComboBox = new QComboBox( TabWidgetMiscellaneousFrame );
-    VideoplayerComboBox->setGeometry( 140, 60, 210, 25 );
-    VideoplayerComboBox->show();
+    hboxPath->addWidget(SaveVideoPathPushButton);
 
-    MinimizedCheckBox = new QCheckBox( TabWidgetMiscellaneousFrame );
-    MinimizedCheckBox->setGeometry( 30, 90, 350, 25 );
-    MinimizedCheckBox->setText( tr( "Vokoscreen minimized when recording starts" ) );
-    MinimizedCheckBox->show();
+    QHBoxLayout *hboxPlayer = new QHBoxLayout;
+    vboxTab4->addLayout(hboxPlayer);
+    
+    QLabel *VideoPlayerLabel = new QLabel( tr( "Player" ) );
+    VideoPlayerLabel->setMinimumWidth(65);
+    hboxPlayer->addWidget(VideoPlayerLabel);
+    
+    VideoplayerComboBox = new QComboBox;
+    hboxPlayer->addWidget(VideoplayerComboBox, 0, Qt::AlignLeft);
+    hboxPlayer->addStretch();
+
+    MinimizedCheckBox = new QCheckBox( tr( "Vokoscreen minimized when recording starts" ) );
+    vboxTab4->addWidget(MinimizedCheckBox);
 
     // Tab 6 About *********************************************************
     QFrame *TabWidgetAboutFrame = new QFrame(this);
-    TabWidgetAboutFrame->show();
     tabWidget->addTab( TabWidgetAboutFrame, "" );
     tabWidget->setTabIcon( 4, QIcon( ":/pictures/about.png" ) );
-    tabWidget->show();
     qfont = TabWidgetAboutFrame->font();
     qfont.setPixelSize( 12 );
     TabWidgetAboutFrame->setFont( qfont );
 
-    int labelWidth = tabWidget->width() / 2;
-    int leftSide = 0;
-    int rightSide = tabWidget->width() / 2;
+    QGridLayout *gridAbout = new QGridLayout(TabWidgetAboutFrame);
+    gridAbout->setMargin(14);
     
-    //QLabel* labelWebSite = new QLabel( TabWidgetAboutFrame );
     QLabel* labelWebSite = new QLabel( TabWidgetAboutFrame );
-    labelWebSite->setGeometry( leftSide, 10, labelWidth, 22 );
     labelWebSite->setText( homepage );
     labelWebSite->setOpenExternalLinks( true );
-    labelWebSite->setAlignment( Qt::AlignCenter );
-    labelWebSite->show();
+    gridAbout->addWidget(labelWebSite, 0, 0, Qt::AlignCenter);
 
     QLabel* labelMailinglisteMail = new QLabel( TabWidgetAboutFrame );
     labelMailinglisteMail->setText( mailingliste );
-    labelMailinglisteMail->setGeometry( leftSide, 30, labelWidth, 22 );
     labelMailinglisteMail->setOpenExternalLinks( true );
-    labelMailinglisteMail->setAlignment( Qt::AlignCenter );    
-    labelMailinglisteMail->show();
+    gridAbout->addWidget(labelMailinglisteMail, 1, 0, Qt::AlignCenter);
 
     QLabel* labelMail = new QLabel( TabWidgetAboutFrame );
-    labelMail->setGeometry( leftSide, 50, labelWidth, 22 );
     labelMail->setText( email );
     labelMail->setOpenExternalLinks( true );
-    labelMail->setAlignment( Qt::AlignCenter );    
-    labelMail->show();
+    gridAbout->addWidget(labelMail, 2, 0, Qt::AlignCenter);
 
     QLabel* labelDeveLoperMail = new QLabel( TabWidgetAboutFrame );
     labelDeveLoperMail->setText( emaildeveloper );
-    labelDeveLoperMail->setGeometry( leftSide, 70, labelWidth, 22 );
     labelDeveLoperMail->setOpenExternalLinks( true );
-    labelDeveLoperMail->setAlignment( Qt::AlignCenter );    
-    labelDeveLoperMail->show();
+    gridAbout->addWidget(labelDeveLoperMail, 3, 0, Qt::AlignCenter);
     
     QLabel* labelLanguageUrl = new QLabel( TabWidgetAboutFrame );
     labelLanguageUrl->setText( "<a href='https://www.transifex.com/projects/p/vokoscreen/'>" + tr( "Translations" ) + "</a>" );
-    labelLanguageUrl->setGeometry( rightSide, 10, labelWidth, 22 );
     labelLanguageUrl->setOpenExternalLinks( true );
-    labelLanguageUrl->setAlignment( Qt::AlignCenter );    
-    labelLanguageUrl->show();
+    gridAbout->addWidget(labelLanguageUrl, 0, 2, Qt::AlignCenter);
     
     QLabel* labelOpensuseBetaUrl = new QLabel( TabWidgetAboutFrame );
     labelOpensuseBetaUrl->setText( "<a href='http://linuxecke.volkoh.de/vokoscreen/vokoscreen.html'>" + tr( "Beta openSUSE" ) + "</a>" );
-    labelOpensuseBetaUrl->setGeometry( rightSide, 30, labelWidth, 22 );
     labelOpensuseBetaUrl->setOpenExternalLinks( true );
-    labelOpensuseBetaUrl->setAlignment( Qt::AlignCenter );    
-    labelOpensuseBetaUrl->show();
+    gridAbout->addWidget(labelOpensuseBetaUrl, 1, 2, Qt::AlignCenter);
 
     QLabel* labelUbuntuBetaUrl = new QLabel( TabWidgetAboutFrame );
     labelUbuntuBetaUrl->setText( "<a href='http://ppa.launchpad.net/vokoscreen-dev/vokoscreen-daily/ubuntu/pool/main/v/vokoscreen/'>" + tr( "Beta Ubuntu" ) + "</a>" );
-    labelUbuntuBetaUrl->setGeometry( rightSide, 50, labelWidth, 22 );
     labelUbuntuBetaUrl->setOpenExternalLinks( true );
-    labelUbuntuBetaUrl->setAlignment( Qt::AlignCenter );    
-    labelUbuntuBetaUrl->show();
+    gridAbout->addWidget(labelUbuntuBetaUrl, 2, 2, Qt::AlignCenter);
     
     QLabel * labelDonateUrl = new QLabel( TabWidgetAboutFrame );
     labelDonateUrl->setText( "<a href='http://www.kohaupt-online.de/hp/spende.html'>" + tr( "Donate" ) + "</a>" );
-    labelDonateUrl->setGeometry( 0, 100, tabWidget->width(), 22 );
     labelDonateUrl->setOpenExternalLinks( true );
-    labelDonateUrl->setAlignment( Qt::AlignCenter );    
-    labelDonateUrl->show();
+    gridAbout->addWidget(labelDonateUrl, 4, 1, Qt::AlignCenter);
     //labelDonateUrl->setAutoFillBackground( true ); //******************
     //labelDonateUrl->setPalette( palette );         //******************
 
     // End Tabs *************************************************************
 
-    recordButton = new QPushButton( centralWidget );
-    recordButton->setText( tr( "Start" ) );
+    QHBoxLayout * hboxControls = new QHBoxLayout;
+    vboxGlobal->addLayout(hboxControls);
+
+    hboxControls->addStretch();
+
+    int btnsHeight = 30;
+
+    recordButton = new QPushButton( tr( "Start" ) );
     recordButton->setToolTip( "CTRL+SHIFT+F10" );
+    recordButton->setMinimumHeight(btnsHeight);
     qfont = recordButton->font();
     qfont.setPixelSize( 14 );
     qfont.setBold( true );
     recordButton->setFont( qfont );
-    recordButton->setGeometry( 170, 200, 70, 30 );
-    recordButton->show();
+    hboxControls->addWidget(recordButton);
+
 /*    if ( needProgram( "ffmpeg" ) )  *************************************************************************************
       recordButton->setEnabled( true );
     else
@@ -353,67 +371,59 @@ screencast::screencast()
 */
     connect( recordButton, SIGNAL( clicked() ), SLOT( preRecord() ) );
 
-    StopButton = new QPushButton( centralWidget );
-    StopButton->setText( tr( "Stop" ) );
+    StopButton = new QPushButton( tr( "Stop" ) );
+    StopButton->setMinimumHeight(btnsHeight);
     StopButton->setToolTip( "CTRL+SHIFT+F11" );
+    hboxControls->addWidget(StopButton);
     qfont = StopButton->font();
     qfont.setPixelSize( 14 );
     qfont.setBold( true );
     StopButton->setFont( qfont );
-    StopButton->setGeometry( 240, 200, 70, 30 );
     StopButton->setEnabled( false );
-    StopButton->show();  
     connect( StopButton, SIGNAL( clicked() ), SLOT( Stop() ) );
     
-    PauseButton = new QPushButton( centralWidget );
-    PauseButton->setText( tr( "Pause" ) );
+    PauseButton = new QPushButton( tr( "Pause" ) );
+    PauseButton->setMinimumHeight(btnsHeight);
     PauseButton->setToolTip( "CTRL+SHIFT+F12" );
+    hboxControls->addWidget(PauseButton);
     qfont = PauseButton->font();
     qfont.setPixelSize( 14 );
     qfont.setBold( true );
     PauseButton->setFont( qfont );
-    PauseButton->setGeometry( 310, 200, 70, 30 );
     PauseButton->setCheckable( true );
     PauseButton->setEnabled( false );
+
     if ( needProgram( "mkvmerge" ) )
       PauseButton->show();
     else
       PauseButton->hide();
     connect( PauseButton, SIGNAL( clicked() ), SLOT( Pause() ) );
 
-    PlayButton = new QPushButton( centralWidget );
-    PlayButton->setText( tr( "Play" ) );
+    PlayButton = new QPushButton( tr( "Play" ) );
+    PlayButton->setMinimumHeight(btnsHeight);
     PlayButton->setToolTip( tr( "Play last Video" ) );
+    hboxControls->addWidget(PlayButton);
     qfont = PlayButton->font();
     qfont.setPixelSize( 14 );
     qfont.setBold( true );
     PlayButton->setFont( qfont );
-    PlayButton->setGeometry( 380, 200, 70, 30 );
-    PlayButton->show();
     connect( PlayButton, SIGNAL( clicked() ), SLOT( play() ) );
 
-    sendPushButton = new QPushButton( centralWidget );
-    sendPushButton->setGeometry( 450, 200, 70, 30 );
+    sendPushButton = new QPushButton( tr( "Send" ) );
+    sendPushButton->setMinimumHeight(btnsHeight);
+    sendPushButton->setToolTip( tr( "Send Video" ) );
+    hboxControls->addWidget(sendPushButton);
     qfont = sendPushButton->font();
     qfont.setPixelSize( 14 );
     qfont.setBold( true );
     sendPushButton->setFont( qfont );
-    sendPushButton->setText( tr( "Send" ) );
-    sendPushButton->setToolTip( tr( "Send Video" ) );
     connect( sendPushButton, SIGNAL( clicked() ), SLOT( send() ) );
     if ( needProgram( "xdg-email" ) )
       sendPushButton->setEnabled( true );
     else
       sendPushButton->setEnabled( false );
-    
-    QLabel* label = new QLabel( centralWidget );
-    label->setText("");
-    label->setGeometry( QRect( 0, 0, 123, 240) );
-    label->setAlignment( Qt::AlignCenter );
-    label->show();
-    QImage* qImage = new QImage( ":/pictures/VokoCola.png" );
-    label->setPixmap(QPixmap::fromImage( *qImage, Qt::AutoColor) );
-    label->setScaledContents( true );
+
+    hboxControls->addStretch();
 
     // Statusbar
     statusBarProgForRecord = new QLabel();
@@ -458,8 +468,10 @@ screencast::screencast()
     statusBarLabelFpsSettings->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
     statusBarLabelFpsSettings->setToolTip( tr( "Settings fps" ) );
 
-    QStatusBar *statusBar = new QStatusBar( this );
+    QStatusBar *statusBar = new QStatusBar;
     setStatusBar( statusBar );
+
+    //qDebug() << statusBar->parent();
     
     QLabel * LabelTemp = new QLabel();
     statusBar->addWidget( LabelTemp, 120 );
@@ -478,7 +490,6 @@ screencast::screencast()
     QLabel * LabelTemp1 = new QLabel();
     statusBar->addWidget( LabelTemp1, 40 );
     
-    statusBar->show();
     qfont = statusBar->font();
     qfont.setPixelSize( 12 );
     statusBar->setFont( qfont );
@@ -850,14 +861,15 @@ void screencast::AlsaWatcherEvent( QStringList CardxList )
   qDebug();
 
   settings.beginGroup( "Pulse" );
-    PulseMultipleChoice();
-    for ( int x = 0; x < 10; x++ )
-       for ( int i = 0; i < getPulseInputDevicesCount(); i++ )
-       {
+  PulseMultipleChoice();
+
+  for ( int x = 0; x < 10; x++ )
+      for ( int i = 0; i < getPulseInputDevicesCount(); i++ )
+      {
           QCheckBox *aa = getCheckBoxPulseDevice( i );
           if ( aa->text() == settings.value( "NameCaptureCard-" + QString::number( x + 1 ) ).toString() )
-            aa->setCheckState( Qt::Checked );
-       }  
+              aa->setCheckState( Qt::Checked );
+      }
   settings.endGroup();
 }
 
@@ -1851,31 +1863,32 @@ void screencast::PulseMultipleChoice()
   
   if ( listQScrollArea.count() > 0 )
   {
-    delete scrollAreaPulse;
-    listQScrollArea.clear();
+      delete scrollAreaPulse;
+      listQScrollArea.clear();
   }
   
   if ( listQScrollArea.count() == 0 )
   {
-    Pulseframe = new QFrame();
-    scrollAreaPulse = new QScrollArea( TabWidgetAudioFrame ); 
-    scrollAreaPulse->setWidget( Pulseframe );
-    scrollAreaPulse->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    scrollAreaPulse->setGeometry( 90, 20, 345, 80 );
-    scrollAreaPulse->show();
-    Pulseframe->setGeometry( 90, 20, 320, 100 ); // Mit den letzten Zahlen werden die scrollAreaPulsebalken geregelt // 90, 45, 320, 100
-    Pulseframe->show();
+      Pulseframe = new QFrame;
 
-    for ( int i = 0; i < getPulseInputDevicesCount(); ++i )
-    {
-      namePulse = new QCheckBox( Pulseframe );
-      namePulse->setGeometry( QRect( 0,  i * 20, 400, 21 ) );
-      namePulse->setText( getPulseInputName( i + 1 ) );
-      namePulse->setAccessibleName( getPulseInputDevices( i + 1 ) );
-      namePulse->setToolTip( tr ( "Select one or more devices" ) );
-      namePulse->show();
-      qDebug() << "[vokoscreen]" << "Find CaptureCard:" << namePulse->text() << "with device:" << namePulse->accessibleName();
-    }  
+      scrollAreaPulse = new QScrollArea(TabWidgetAudioFrame);
+      scrollAreaPulse->setWidget(Pulseframe);
+      scrollAreaPulse->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+      scrollAreaPulse->setWidgetResizable(true);
+
+      gridAudio->addWidget(scrollAreaPulse, 0, 1);
+
+      QVBoxLayout *vboxPulses = new QVBoxLayout(Pulseframe);
+
+      for ( int i = 0; i < getPulseInputDevicesCount(); ++i )
+      {
+          namePulse = new QCheckBox;
+          namePulse->setText( getPulseInputName( i + 1 ) );
+          namePulse->setAccessibleName( getPulseInputDevices( i + 1 ) );
+          namePulse->setToolTip( tr ( "Select one or more devices" ) );
+          vboxPulses->addWidget(namePulse);
+          qDebug() << "[vokoscreen]" << "Find CaptureCard:" << namePulse->text() << "with device:" << namePulse->accessibleName();
+      }
   }
   
   AudioOnOff();
